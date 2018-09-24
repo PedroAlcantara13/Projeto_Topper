@@ -19,14 +19,29 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Camisa TShirt Feminina</td>
-            <td>15</td>
-            <td>15,99</td>
-            <td><i class="fa fa-refresh"></i> | <i class="fa fa-trash"></i></td>
+            <?php
+      include "config.php";
 
-          </tr>
+      $sqll = "SELECT * FROM cad_produto";
+      $busca = mysqli_query($conexao, $sqll);
+   if (mysqli_num_rows($busca)<0) {      
+      echo "Nenhum registro encontrado.";
+   }else{
+
+
+      while ($dados = mysqli_fetch_array($busca)) {                 
+      echo "
+                <tr>
+            <td>".$dados['id']."</td>
+            <td>".$dados['produto']."</td>
+            <td>".$dados['quantidade']."</td>
+            <td>".$dados['preco']."</td>
+            <td><i class='fa fa-refresh'></i> | <i class='fa fa-trash'></i></td><br>
+            </tr>
+";
+}
+}
+?>
         </tbody>
       </table>
 

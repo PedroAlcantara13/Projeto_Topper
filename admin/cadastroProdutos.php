@@ -43,6 +43,15 @@
                   <option>Accesories</option>
                 </select>
     </div>
+    <div class="form-group">
+      <label>Descrição:</label>
+      <input style="width: 500px;background-color: #87CEED" type="text" id="descricao" class="form-control" name="descricao"required>
+    </div>
+
+    <div class="form-group">
+      <label>Quantidade:</label>
+      <input style="width: 500px;background-color: #87CEED" type="number" id="quantidade" class="form-control" name="quantidade"required>
+    </div>
 
     <div class="form-group">
       <label>Foto</label>
