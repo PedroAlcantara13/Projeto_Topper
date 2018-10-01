@@ -567,7 +567,7 @@
 					<div class='row'>
 
 <?php
-
+//TESTE
 		if (isset($_POST['produtor'])) {
 			$sqll = "SELECT * FROM cad_produto WHERE produto = '".$_POST['produtor']."'";			
 		} else {$sqll = "SELECT * FROM cad_produto";}
