@@ -11,7 +11,7 @@
 
 require "config.php";
                 
-$sqlM = "SELECT * FROM notificacoes, contato WHERE contato.id = notificacoes.idContato AND notificacoes.status = 0";
+$sqlM = "SELECT * FROM notificacao, contato WHERE contato.id = notificacao.idcontato AND notificacao.status = '0'";
 $notifys = mysqli_query($conexao, $sqlM);
 
 while($notifyUser = mysqli_fetch_assoc($notifys)){
@@ -27,4 +27,5 @@ while($notifyUser = mysqli_fetch_assoc($notifys)){
     </a>
   </li>
   ';  
-} ?>
+}
+?>

@@ -57,6 +57,10 @@
       <label>Foto</label>
       <input style="margin-left: 480px;" align="center" type="file" class="form-control" name="arquivo" multiple required>
     </div>
+    <div class="form-group">
+      <label>Foto</label>
+      <input style="margin-left: 480px;" align="center" type="file" class="form-control" name="arquivo2" multiple required>
+    </div>
 
 <!-- Button (Double) -->
 <div class="form-group">

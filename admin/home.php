@@ -35,7 +35,7 @@
             <td>".$dados['id']."</td>
             <td>".$dados['produto']."</td>
             <td>".$dados['quantidade']."</td>
-            <td>".$dados['preco']."</td>
+            <td>R$".$dados['preco']."</td>
             <td><i class='fa fa-refresh'></i> | <i class='fa fa-trash'></i></td><br>
             </tr>
 ";

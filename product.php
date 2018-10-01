@@ -33,6 +33,9 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 <!--===============================================================================================-->
 </head>
+<?php 
+			include "admin/config.php";
+ ?>
 <body class="animsition">
 
 	<!-- Header -->
@@ -502,14 +505,29 @@
 								</li>
 							</ul>
 						</div>
+							<form method="post">
+								<div class="search-product pos-relative bo4 of-hidden">
+									<input list="produtos" class="s-text7 size6 p-l-23 p-r-50" type="text" name="produtor" placeholder="Buscar Produto">
 
-						<div class="search-product pos-relative bo4 of-hidden">
-							<input class="s-text7 size6 p-l-23 p-r-50" type="text" name="search-product" placeholder="Search Products...">
+									<datalist id="produtos">
+										<?php
 
-							<button class="flex-c-m size5 ab-r-m color2 color0-hov trans-0-4">
-								<i class="fs-12 fa fa-search" aria-hidden="true"></i>
-							</button>
-						</div>
+											$sqlll = "SELECT * FROM cad_produto";
+
+											$queryy = mysqli_query($conexao, $sqlll);
+
+											while ($dadoss = mysqli_fetch_assoc($queryy)) {
+												echo "<option>".$dadoss['produto']."</option>";
+											}
+
+										?>
+									</datalist>
+
+									<button type="submit" class="flex-c-m size5 ab-r-m color2 color0-hov trans-0-4">
+										<i class="fs-12 fa fa-search" aria-hidden="true"></i>
+									</button>
+								</div>
+								</form>
 					</div>
 				</div>
 
@@ -519,10 +537,8 @@
 						<div class="flex-w">
 							<div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
 								<select class="selection-2" name="sorting">
-									<option>Default Sorting</option>
-									<option>Popularity</option>
-									<option>Price: low to high</option>
-									<option>Price: high to low</option>
+									<option value="cres">Price: low to high</option>
+									<option value="decres">Price: high to low</option>
 								</select>
 							</div>
 
@@ -537,21 +553,28 @@
 
 								</select>
 							</div>
+							<div class="w-size12 m-t-5 m-b-5 m-r-10">
+								<button type="submit" class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+								Filtrar
+							</button>
+							</div>
 						</div>
 
 						<span class="s-text8 p-t-5 p-b-5">
-							Showing 1–12 of 16 results
+							
 						</span>
 					</div>
 					<div class='row'>
 
 <?php
 
-			include "admin/config.php";
+		if (isset($_POST['produtor'])) {
+			$sqll = "SELECT * FROM cad_produto WHERE produto = '".$_POST['produtor']."'";			
+		} else {$sqll = "SELECT * FROM cad_produto";}
 
-      $sqll = "SELECT * FROM cad_produto";
       $busca = mysqli_query($conexao, $sqll);
-   if (mysqli_num_rows($busca)<0) {      
+
+   if (mysqli_num_rows($busca) < 0) {      
       echo "Nenhum registro encontrado.";
    }else{
    	while ($dados = mysqli_fetch_array($busca)) {
@@ -582,7 +605,7 @@ echo "
 									</a>
 
 									<span class='block2-price m-text6 p-r-5'>
-										".$dados['preco']."
+										R$".$dados['preco']."
 									</span>
 								</div>
 							</div>

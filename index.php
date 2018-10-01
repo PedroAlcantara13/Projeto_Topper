@@ -595,7 +595,7 @@
 								</a>
 
 								<span class='block2-price m-text6 p-r-5'>
-									".$dados['preco']."
+									R$".$dados['preco']."
 								</span>
 							</div>
 						</div>

@@ -424,9 +424,9 @@ echo "
 							</div>
 						</div>
 
-						<div class='item-slick3' data-thumb='images/img/".$dados['arquivo']."'>
+						<div class='item-slick3' data-thumb='images/img/".$dados['arquivo2']."'>
 							<div class='wrap-pic-w'>
-								<img src='images/img/".$dados['arquivo']."' alt='IMG-PRODUCT'>
+								<img src='images/img/".$dados['arquivo2']."' alt='IMG-PRODUCT'>
 							</div>
 						</div>
 
@@ -446,7 +446,7 @@ echo "
 				</h4>
 
 				<span class='m-text17'>
-					".$dados['preco']."
+					R$".$dados['preco']."
 				</span>
 
 				<p class='s-text8 p-t-10'>
@@ -604,7 +604,7 @@ echo "
 								</a>
 
 								<span class='block2-price m-text6 p-r-5'>
-									".$dados['preco']."
+									R$".$dados['preco']."
 								</span>
 							</div>
 						</div>
