@@ -1,7 +1,10 @@
+<?php
+	session_start();	
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Contact</title>
+	<title>Cart</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
@@ -120,68 +123,53 @@
 
 					<div class="header-wrapicon2">
 						<img src="images/icons/icon-header-02.png" class="header-icon1 js-show-header-dropdown" alt="ICON">
-						<span class="header-icons-noti">0</span>
+						<span class="header-icons-noti"><?php echo count($_SESSION['carrinho']) ?></span>
 
 						<!-- Header cart noti -->
 						<div class="header-cart header-dropdown">
 							<ul class="header-cart-wrapitem">
-								<li class="header-cart-item">
-									<div class="header-cart-item-img">
-										<img src="images/item-cart-01.jpg" style="width: 80px;height: 80px;" alt="IMG">
-									</div>
+								<table class="table-shopping-cart">
+                        <?php 
+			include "admin/config.php";
 
-									<div class="header-cart-item-txt">
-										<a href="#" class="header-cart-item-name">
-											White Shirt With Pleat Detail Back
-										</a>
+                            foreach ($_SESSION['carrinho'] as $id => $qnt) {
 
-										<span class="header-cart-item-info">
-											1 x $19.00
-										</span>
-									</div>
-								</li>
+                                $sql_car = "SELECT * FROM cad_produto WHERE id = '$id'";
+                                $query_car = mysqli_query($conexao, $sql_car);
+                                $prods = mysqli_fetch_assoc($query_car);
 
-								<li class="header-cart-item">
-									<div class="header-cart-item-img">
-										<img src="images/item-cart-02.jpg" alt="IMG">
-									</div>
 
-									<div class="header-cart-item-txt">
-										<a href="#" class="header-cart-item-name">
-											Converse All Star Hi Black Canvas
-										</a>
+                                        echo '<li class="header-cart-item">
+                                            <div class="header-cart-item-img">
+                                                <img src="images/img/'.$prods['arquivo'].'" alt="IMG">
+                                            </div>
+												<div class="header-cart-item-txt">
+                                                <a href="#" class="header-cart-item-name">
+                                                    '.$prods['produto'].'
+                                                </a>
 
-										<span class="header-cart-item-info">
-											1 x $39.00
-										</span>
-									</div>
-								</li>
-
-								<li class="header-cart-item">
-									<div class="header-cart-item-img">
-										<img src="images/item-cart-03.jpg" alt="IMG">
-									</div>
-
-									<div class="header-cart-item-txt">
-										<a href="#" class="header-cart-item-name">
-											Nixon Porter Leather Watch In Tan
-										</a>
-
-										<span class="header-cart-item-info">
-											1 x $17.00
-										</span>
-									</div>
-								</li>
+                                                <span class="header-cart-item-info">
+                                                    '.$qnt.' x R$ '.number_format($prods['preco'], 2, ',', '.').'
+                                                </span>
+                                            </div>
+                                        </li>
+                                        ';
+                                        $totalC += $qnt * $prods['preco'];
+                                    }
+                                    $totalPro += $qnt * $prods['preco'];
+                                    
+                                        ?>
 							</ul>
+						</table>
 
 							<div class="header-cart-total">
-								Total: $75.00
+								Total: <?php echo "R$".number_format($totalC, 2, ',', '.'); ?> 
 							</div>
 
 							<div class="header-cart-buttons">
 								<div class="header-cart-wrapbtn">
 									<!-- Button -->
-									<a href="cart.html" class="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
+									<a href="cart.php" class="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
 										View Cart
 									</a>
 								</div>
@@ -198,7 +186,6 @@
 				</div>
 			</div>
 		</div>
-
 		<!-- Header Mobile -->
 		<div class="wrap_header_mobile">
 			<!-- Logo moblie -->
@@ -377,57 +364,182 @@
 	</header>
 
 	<!-- Title Page -->
-	<section class="bg-title-page p-t-40 p-b-50 flex-col-c-m" style="background-image: url(images/heading-pages-06.jpg);">
+	<section class="bg-title-page p-t-40 p-b-50 flex-col-c-m" style="background-image: url(images/heading-pages-01.jpg);">
 		<h2 class="l-text2 t-center">
-			Contact
+			Cart
 		</h2>
 	</section>
 
-	<!-- content page -->
-	<section class="bgwhite p-t-66 p-b-60">
+	<!-- Cart -->
+	<section class="cart bgwhite p-t-70 p-b-100">
 		<div class="container">
-			<div class="row">
-				<div class="col-md-6 p-b-30">
-					<div class="p-r-20 p-r-0-lg">
-						<div class="contact-map size21" id="google_map" data-map-x="40.614439" data-map-y="-73.926781" data-pin="images/icons/icon-position-map.png" data-scrollwhell="0" data-draggable="1"></div>
+			<!-- Cart item -->
+			<div class="container-table-cart pos-relative">
+				<div class="wrap-table-shopping-cart bgwhite">
+					<table class="table-shopping-cart">
+						<tr class="table-head">
+							<th class="column-1"></th>
+							<th class="column-2">Product</th>
+							<th class="column-3">Price</th>
+							<th class="column-4 p-l-70">Quantity</th>
+							<th class="column-5">Total</th>
+						</tr>
+						
+						<?php
+ 							foreach ($_SESSION['carrinho'] as $id => $qnt) {
+
+                                $sql_car = "SELECT * FROM cad_produto WHERE id = '$id'";
+                                $query_car = mysqli_query($conexao, $sql_car);
+                                $produts = mysqli_fetch_assoc($query_car);
+
+                                echo '
+                                <form method="GET">
+						<tr class="table-row">
+							<td class="column-1">
+								<div class="cart-img-product b-rad-4 o-f-hidden">
+									<img src="images/img/'.$produts['arquivo'].'" alt="IMG-PRODUCT">
+								</div>
+							</td>
+							<td class="column-2">'.$produts['produto'].'</td>
+							<td class="column-3">R$'.$produts['preco'].'</td>
+							<td class="column-4">
+								<div class="flex-w bo5 of-hidden w-size17">
+
+									<input class="size8 m-text18 t-center num-product" type="number" name="quant" value="">
+
+								</div>
+							</td>
+							<td class="column-5">R$'.$totalC.'</td>
+						</tr>
+
+						';
+						$qnt = $_GET['quant'];
+						$totalC += $qnt * $prods['preco'];
+					}
+
+						?>
+
+					</table>
+				</div>
+			</div>
+
+			<div class="flex-w flex-sb-m p-t-25 p-b-25 bo8 p-l-35 p-r-60 p-lr-15-sm">
+				<div class="flex-w flex-m w-full-sm">
+					<div class="size11 bo4 m-r-10">
+						<input class="sizefull s-text7 p-l-22 p-r-22" type="text" name="coupon-code" placeholder="Coupon Code">
+					</div>
+
+					<div class="size12 trans-0-4 m-t-10 m-b-10 m-r-10">
+						<!-- Button -->
+						<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+							Apply coupon
+						</button>
 					</div>
 				</div>
 
-				<div class="col-md-6 p-b-30">
-					<form class="leave-comment" action="addcontato.php" method="post">
-						<h4 class="m-text26 p-b-36 p-t-15">
-							Send us your message
-						</h4>
+				<div class="size10 trans-0-4 m-t-10 m-b-10">
+					<!-- Button -->
+					<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+						Update Cart
+					</button>
+				</div>
+			</div>
+</form>
+			<!-- Total -->
+			<div class="bo9 w-size18 p-l-40 p-r-40 p-t-30 p-b-38 m-t-30 m-r-0 m-l-auto p-lr-15-sm">
+				<h5 class="m-text20 p-b-24">
+					Cart Totals
+				</h5>
 
-						<div class="bo4 of-hidden size15 m-b-20">
-							<input class="sizefull s-text7 p-l-22 p-r-22" type="text" name="nome" placeholder="Nome Completo" required>
+				<!--  -->
+				<div class="flex-w flex-sb-m p-b-12">
+					<span class="s-text18 w-size19 w-full-sm">
+						Subtotal:
+					</span>
+
+					<span class="m-text21 w-size20 w-full-sm">
+						<?php echo number_format($totalC,2,",",".")?>
+					</span>
+				</div>
+
+				<!--  -->
+				<div class="flex-w flex-sb bo10 p-t-15 p-b-20">
+					<span class="s-text18 w-size19 w-full-sm">
+						Shipping:
+					</span>
+
+					<div class="w-size20 w-full-sm">
+						<p class="s-text8 p-b-23">
+							There are no shipping methods available. Please double check your address, or contact us if you need any help.
+						</p>
+					<form method="POST">
+						<span class="s-text19">
+							Calculate Shipping
+						</span>
+
+						<div class="rs2-select2 rs3-select2 rs4-select2 bo4 of-hidden w-size21 m-t-8 m-b-12">
+							<select class="tipo" name="tipo">
+								<option value ='04510 '>PAC</option>
+								<option value ='04014'>SEDEX</option>
+							</select>
 						</div>
 
-						<div class="bo4 of-hidden size15 m-b-20">
-							<input class="sizefull s-text7 p-l-22 p-r-22" type="text" name="assunto" placeholder="Assunto" required>
+						<div class="size13 bo4 m-b-12">
+						<input class="sizefull s-text7 p-l-15 p-r-15" type="text" name="postcode" placeholder="CEP">
 						</div>
 
-						<div class="bo4 of-hidden size15 m-b-20">
-							<input class="sizefull s-text7 p-l-22 p-r-22" type="text" name="telefone" placeholder="(xx) 99999-9999" required>
-						</div>
-
-						<div class="bo4 of-hidden size15 m-b-20">
-							<input class="sizefull s-text7 p-l-22 p-r-22" type="email" name="email" placeholder="seu@email.com" required>
-						</div>
-
-						<textarea class="dis-block s-text7 size20 bo4 p-l-22 p-r-22 p-t-13 m-b-20" name="mensagem" placeholder="mensagem"></textarea>
-
-						<div class="w-size25" required>
+						<div class="size14 trans-0-4 m-b-10">
 							<!-- Button -->
-							<button class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4">
-								Send
+							<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+								Update Totals
 							</button>
 						</div>
-					</form>
+						</form>
+					</div>
+				</div>
+
+				<!--  -->
+				<div class="flex-w flex-sb-m p-t-26 p-b-30">
+					<span class="m-text22 w-size19 w-full-sm">
+					<?php
+Error_reporting(0);
+						if (empty($_POST['postcode'])&& isset($_POST['tipo'])) {
+
+						echo"Iforme Seu CEP";
+						$valor = 0;
+						}else{
+						$url = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx?nCdEmpresa=08082650&sDsSenha=564321&sCepOrigem=59920000&sCepDestino=".$_POST['postcode']."&nVlPeso=1&nCdFormato=1&nVlComprimento=20&nVlAltura=20&nVlLargura=20&sCdMaoPropria=n&nVlValorDeclarado=0&sCdAvisoRecebimento=n&nCdServico=".$_POST['tipo']."&nVlDiametro=0&StrRetorno=xml&nIndicaCalculo=3";
+						$xml = simplexml_load_file($url);
+						$dados = $xml -> cServico;
+
+						$valor = $dados -> Valor;
+						$prazo = $dados -> PrazoEntrega;
+						echo "Valor:R$$valor  Prazo: $prazo Dia";
+						}
+						
+						?>
+					</span>
+
+				</div>
+
+				<div class="flex-w flex-sb-m p-t-26 p-b-30">
+					<span class="m-text22 w-size19 w-full-sm">
+					Total:
+					
+					</span>
+
+				</div>
+
+				<div class="size15 trans-0-4">
+					<!-- Button -->
+					<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+						Proceed to Checkout
+					</button>
 				</div>
 			</div>
 		</div>
 	</section>
+
 
 
 	<!-- Footer -->
@@ -633,9 +745,6 @@
 			dropdownParent: $('#dropDownSelect2')
 		});
 	</script>
-<!--===============================================================================================-->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKFWBqlKAGCeS1rMVoaNlwyayu0e0YRes"></script>
-	<script src="js/map-custom.js"></script>
 <!--===============================================================================================-->
 	<script src="js/main.js"></script>
 

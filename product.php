@@ -1,3 +1,21 @@
+<?php
+	session_start();
+
+if (!isset($_SESSION['carrinho'])) {
+	$_SESSION['carrinho'] = array();
+}
+
+if (isset($_GET['acao'])) {
+	$id = $_GET['id'];
+	if ($_GET['acao'] == 'add') {
+		if (!isset($_SESSION['carrinho'][$id])) {
+			$_SESSION['carrinho'][$id] = 1;
+		}else{
+			$_SESSION['carrinho'][$id] += 1;
+		}
+	}
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,68 +143,50 @@
 
 					<div class="header-wrapicon2">
 						<img src="images/icons/icon-header-02.png" class="header-icon1 js-show-header-dropdown" alt="ICON">
-						<span class="header-icons-noti">0</span>
+						<span class="header-icons-noti"><?php echo count($_SESSION['carrinho']) ?></span>
 
 						<!-- Header cart noti -->
 						<div class="header-cart header-dropdown">
 							<ul class="header-cart-wrapitem">
-								<li class="header-cart-item">
-									<div class="header-cart-item-img">
-										<img src="images/item-cart-01.jpg" alt="IMG">
-									</div>
+								<table class="table-shopping-cart">
+                        <?php 
 
-									<div class="header-cart-item-txt">
-										<a href="#" class="header-cart-item-name">
-											White Shirt With Pleat Detail Back
-										</a>
+                            foreach ($_SESSION['carrinho'] as $id => $qnt) {
 
-										<span class="header-cart-item-info">
-											1 x $19.00
-										</span>
-									</div>
-								</li>
+                                $sql_car = "SELECT * FROM cad_produto WHERE id = '$id'";
+                                $query_car = mysqli_query($conexao, $sql_car);
+                                $prods = mysqli_fetch_assoc($query_car);
 
-								<li class="header-cart-item">
-									<div class="header-cart-item-img">
-										<img src="images/item-cart-02.jpg" alt="IMG">
-									</div>
 
-									<div class="header-cart-item-txt">
-										<a href="#" class="header-cart-item-name">
-											Converse All Star Hi Black Canvas
-										</a>
+                                        echo '<li class="header-cart-item">
+                                            <div class="header-cart-item-img">
+                                                <img src="images/img/'.$prods['arquivo'].'" alt="IMG">
+                                            </div>
+												<div class="header-cart-item-txt">
+                                                <a href="#" class="header-cart-item-name">
+                                                    '.$prods['produto'].'
+                                                </a>
 
-										<span class="header-cart-item-info">
-											1 x $39.00
-										</span>
-									</div>
-								</li>
-
-								<li class="header-cart-item">
-									<div class="header-cart-item-img">
-										<img src="images/item-cart-03.jpg" alt="IMG">
-									</div>
-
-									<div class="header-cart-item-txt">
-										<a href="#" class="header-cart-item-name">
-											Nixon Porter Leather Watch In Tan
-										</a>
-
-										<span class="header-cart-item-info">
-											1 x $17.00
-										</span>
-									</div>
-								</li>
+                                                <span class="header-cart-item-info">
+                                                    '.$qnt.' x R$ '.number_format($prods['preco'], 2, ',', '.').'
+                                                </span>
+                                            </div>
+                                        </li>';
+                                        $totalC += $qnt * $prods['preco'];
+                                    }
+                                    
+                                        ?>
 							</ul>
+						</table>
 
 							<div class="header-cart-total">
-								Total: $75.00
+								Total: <?php echo "R$".number_format($totalC, 2, ',', '.'); ?> 
 							</div>
 
 							<div class="header-cart-buttons">
 								<div class="header-cart-wrapbtn">
 									<!-- Button -->
-									<a href="cart.html" class="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
+									<a href="cart.php" class="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
 										View Cart
 									</a>
 								</div>
@@ -567,16 +567,30 @@
 					<div class='row'>
 
 <?php
-//TESTE
+
+$pagina = isset($_GET['pagina'])?$_GET['pagina']:1;
+$registro = 6;
+
+$sqlT = "SELECT * FROM cad_produto";
+$queryT = mysqli_query($conexao, $sqlT);
+$total = mysqli_num_rows($queryT);
+
+$numPaginas = ceil($total/$registro);
+
+$inicio = $pagina - 1;
+$inicio = ($inicio*$numPaginas);
+
+
 		if (isset($_POST['produtor'])) {
 			$sqll = "SELECT * FROM cad_produto WHERE produto = '".$_POST['produtor']."'";			
-		} else {$sqll = "SELECT * FROM cad_produto";}
+		} else {$sqll = "SELECT * FROM cad_produto LIMIT $inicio, $registro" ;}
 
       $busca = mysqli_query($conexao, $sqll);
 
    if (mysqli_num_rows($busca) < 0) {      
       echo "Nenhum registro encontrado.";
    }else{
+
    	while ($dados = mysqli_fetch_array($busca)) {
 echo "
 						<div class='col-sm-12 col-md-6 col-lg-4 p-b-50'>
@@ -592,9 +606,9 @@ echo "
 
 										<div class='block2-btn-addcart w-size1 trans-0-4'>
 											<!-- Button -->
-											<button class='flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4'>
+											<a href='?acao=add&id=".$dados['id']."' class='flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4'>
 												Add to Cart
-											</button>
+											</a>
 										</div>
 									</div>
 								</div>
@@ -611,15 +625,22 @@ echo "
 							</div>
 						</div>";
 }
+for ($i=1; $i <= $numPaginas ; $i++) { 
+	echo '
+	<div class="pagination flex-m flex-w p-t-26">
+		<a href="?pagina='.$i.'" class="item-pagination flex-c-m trans-0-4 active-pagination">'.$i.'</a>
+		</div>
+	';
+}
 }
 ?>
 					</div>
 
 					<!-- Pagination -->
-					<div class="pagination flex-m flex-w p-t-26">
+					<!--<div class="pagination flex-m flex-w p-t-26">
 						<a href="#" class="item-pagination flex-c-m trans-0-4 active-pagination">1</a>
 						<a href="#" class="item-pagination flex-c-m trans-0-4">2</a>
-					</div>
+					</div>-->
 				</div>
 			</div>
 		</div>
