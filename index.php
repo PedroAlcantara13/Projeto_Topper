@@ -1,6 +1,51 @@
 <?php
-session_start();
-			include "admin/config.php";
+			session_start();
+require("admin/config.php");
+  error_reporting(0);
+  session_start();
+
+  if(!isset($_SESSION['nome'])){
+    header('location:login.php');
+}
+  
+  //SAIR
+  if(isset($_GET['sair'])){
+    session_destroy();
+    unlink($_SESSION['nome']);
+    header('location:login.php');
+  }
+	
+if (!isset($_SESSION['carrinho'])) {
+	$_SESSION['carrinho'] = array();
+}
+
+if (isset($_GET['acao'])) {
+	$id = $_GET['id'];
+	if ($_GET['acao'] == 'add') {
+		if (!isset($_SESSION['carrinho'][$id])) {
+			$_SESSION['carrinho'][$id] = 1;
+		}else{
+			$_SESSION['carrinho'][$id] += 1;
+		}
+	}
+}
+if(isset($_GET['acao'])){
+		$id = $_GET['id'];
+		if($_GET['acao'] == "del"){
+			unset($_SESSION['carrinho'][$id]);
+		}
+		}
+
+	
+   $sql = "SELECT * FROM clientes WHERE nome = '".$_SESSION['nome']."'";
+  $query = mysqli_query($conexao, $sql);
+
+  while ($dadosUser = mysqli_fetch_assoc($query)) {
+    $nomecli = $dadosUser['nome'];
+    $email = $dadosUser['email'];
+    $imgUser = $dadosUser['arquivo'];
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -101,19 +146,11 @@ session_start();
 							</li>
 
 							<li>
-								<a href="cart.html">Features</a>
+								<a href="cart.php">Features</a>
 							</li>
 
 							<li>
-								<a href="blog.html">Blog</a>
-							</li>
-
-							<li>
-								<a href="about.html">About</a>
-							</li>
-
-							<li>
-								<a href="contact.html">Contact</a>
+								<a href="contact.php">Contact</a>
 							</li>
 						</ul>
 					</nav>
@@ -121,15 +158,23 @@ session_start();
 
 				<!-- Header Icon -->
 				<div class="header-icons">
-					<a href="#" class="header-wrapicon1 dis-block">
-						<img src="images/icons/icon-header-01.png" class="header-icon1" alt="ICON">
-					</a>
+				
+				<?php 
+				echo '<a href="perfil.php">'.$nomecli.'</a>
+                <img style="width: 27px;height: 27px;" src="images/cli/'.$imgUser.'" class="header-icon1" alt="ICON">
+                <a href="?sair" class="btn btn-default btn-flat">Sair</a>
+                ';
+				?>	
+						
+
 
 					<span class="linedivide1"></span>
 
 					<div class="header-wrapicon2">
 						<img src="images/icons/icon-header-02.png" class="header-icon1 js-show-header-dropdown" alt="ICON">
-						<span class="header-icons-noti"><?php echo count($_SESSION['carrinho']) ?></span>
+						<span class="header-icons-noti"><?php echo count($_SESSION['carrinho']);
+						error_reporting(0);
+						 ?></span>
 
 						<!-- Header cart noti -->
 						<div class="header-cart header-dropdown">
@@ -349,10 +394,6 @@ session_start();
 					</li>
 
 					<li class="item-menu-mobile">
-						<a href="cart.html">Features</a>
-					</li>
-
-					<li class="item-menu-mobile">
 						<a href="blog.html">Blog</a>
 					</li>
 
@@ -372,58 +413,59 @@ session_start();
 	<section class="slide1">
 		<div class="wrap-slick1">
 			<div class="slick1">
-				<div class="item-slick1 item1-slick1" style="background-image: url(images/master-slide-02.jpg);">
+				<div class="item-slick1 item1-slick1" style="background-image: url(images/predio.jpg);">
 					<div class="wrap-content-slide1 sizefull flex-col-c-m p-l-15 p-r-15 p-t-150 p-b-170">
 						<span class="caption1-slide1 m-text1 t-center animated visible-false m-b-15" data-appear="fadeInDown">
-							Women Collection 2018
+							Moda Masculina e Feminina
 						</span>
 
 						<h2 class="caption2-slide1 xl-text1 t-center animated visible-false m-b-37" data-appear="fadeInUp">
-							New arrivals
+							Novos Produtos
 						</h2>
 
 						<div class="wrap-btn-slide1 w-size1 animated visible-false" data-appear="zoomIn">
 							<!-- Button -->
-							<a href="product.html" class="flex-c-m size2 bo-rad-23 s-text2 bgwhite hov1 trans-0-4">
-								Shop Now
+							<a href="product.php" class="flex-c-m size2 bo-rad-23 s-text2 bgwhite hov1 trans-0-4">
+								Comprar Agora
 							</a>
 						</div>
 					</div>
 				</div>
 
-				<div class="item-slick1 item2-slick1" style="background-image: url(images/master-slide-03.jpg);">
+				<div class="item-slick1 item2-slick1" style="background-image: url(images/xis.png);">
 					<div class="wrap-content-slide1 sizefull flex-col-c-m p-l-15 p-r-15 p-t-150 p-b-170">
 						<span class="caption1-slide1 m-text1 t-center animated visible-false m-b-15" data-appear="rollIn">
-							Women Collection 2018
+							Moda Casual
 						</span>
 
 						<h2 class="caption2-slide1 xl-text1 t-center animated visible-false m-b-37" data-appear="lightSpeedIn">
-							New arrivals
+							Produtos de Qualidade
 						</h2>
 
 						<div class="wrap-btn-slide1 w-size1 animated visible-false" data-appear="slideInUp">
 							<!-- Button -->
-							<a href="product.html" class="flex-c-m size2 bo-rad-23 s-text2 bgwhite hov1 trans-0-4">
-								Shop Now
+							<a href="product.php" class="flex-c-m size2 bo-rad-23 s-text2 bgwhite hov1 trans-0-4">
+								Comprar Agora
 							</a>
 						</div>
 					</div>
 				</div>
 
-				<div class="item-slick1 item3-slick1" style="background-image: url(images/master-slide-04.jpg);">
+				<div class="item-slick1 item3-slick1" style="background-image: url(images/acess.jpg);">
 					<div class="wrap-content-slide1 sizefull flex-col-c-m p-l-15 p-r-15 p-t-150 p-b-170">
-						<span class="caption1-slide1 m-text1 t-center animated visible-false m-b-15" data-appear="rotateInDownLeft">
-							Women Collection 2018
+						<span class="caption1-slide1 m-text1 t-center animated visible-false m-b-15" data-appear="rotateInDownLeft" style="color: black;">
+							Calçados e Acessorios
 						</span>
 
-						<h2 class="caption2-slide1 xl-text1 t-center animated visible-false m-b-37" data-appear="rotateInUpRight">
-							New arrivals
+						<h2
+						style="color: black;" class="caption2-slide1 xl-text1 t-center animated visible-false m-b-37" data-appear="rotateInUpRight">
+							Otimo Preço
 						</h2>
 
 						<div class="wrap-btn-slide1 w-size1 animated visible-false" data-appear="rotateIn">
 							<!-- Button -->
-							<a href="product.html" class="flex-c-m size2 bo-rad-23 s-text2 bgwhite hov1 trans-0-4">
-								Shop Now
+							<a href="product.php" class="flex-c-m size2 bo-rad-23 s-text2 bgwhite hov1 trans-0-4">
+								Comprar Agora
 							</a>
 						</div>
 					</div>
@@ -452,11 +494,11 @@ session_start();
 
 					<!-- block1 -->
 					<div class="block1 hov-img-zoom pos-relative m-b-30">
-						<img src="images/banner-05.jpg" alt="IMG-BENNER">
+						<img src="images/img/0.53936300 1537880733.jpg" alt="IMG-BENNER">
 
 						<div class="block1-wrapbtn w-size2">
 							<!-- Button -->
-							<a href="#" class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
+							<a href="product.php" class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
 								Sunglasses
 							</a>
 						</div>

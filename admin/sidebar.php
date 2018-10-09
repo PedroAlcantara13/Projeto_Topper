@@ -51,11 +51,10 @@
          <li class="treeview">
           <a href="#">
             <i class="fa fa-th"></i>
-            <span>Categoria</span>
+            <span>Clientes</span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="?page=cadastroCategoria"><i class="fa fa-plus"></i> Cadastro</a></li>
-            <li><a href="?page=consultaCategorias"><i class="fa fa-search"></i> Consulta</a></li>
+            <li><a href="?page=cadastroCategoria"><i class="fa fa-plus"></i> Cadastrados</a></li>
           </ul>
         </li>
 

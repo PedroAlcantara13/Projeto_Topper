@@ -11,48 +11,42 @@
       <div class="row">
         <div class="col-md-12">
 
-  <div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="exampleModalLabel">Contato</h3>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-       <form method="post" action="cadMenu.php?acao=u">
-      <fieldset>
-      <div class="form-group">
-         <label for="nome">SKU</label>
-        <input style="width: 80px" readonly type="text" class="form-control" id="id" name="id" value="<?php echo strtolower(substr(md5(microtime()), -6));?>">
-      </div>
-       <div class="form-group">
-        <label for="nome">None</label>
-        <input type="text" class="form-control" id="nome" name="nome">
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" class="form-control" id="email" name="email">
-      </div>
-       <div class="form-group">
-        <label for="tel">Telefone</label>
-        <input type="text" class="form-control" id="tel" name="tel">
-      </div>
-       <div class="form-group">
-        <label for="assunto">Mensagem</label>
-        <textarea class="form-control" rows="6" id="mensagem" name="mensagem"></textarea>
-      </div>
-      </fieldset>
-        <div class="modal-footer">
-          <a href="?page=menu&acao=u" class="btn btn-danger" data-dismiss="modal">Fechar</a>
-      </div>
-    </form>
-      </div>
-    
+ <div class="content">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Nº Celular</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+            <?php
+      include "config.php";
+
+      $sqll = "SELECT * FROM clientes";
+      $busca = mysqli_query($conexao, $sqll);
+   if (mysqli_num_rows($busca)<0) {      
+      echo "Nenhum registro encontrado.";
+   }else{
+
+
+      while ($dados = mysqli_fetch_array($busca)) {                 
+      echo "
+                <tr>
+            <td>".$dados['id']."</td>
+            <td>".$dados['nome']."</td>
+            <td>".$dados['celular']."</td>
+            <td>".$dados['email']."</td>
+
+";
+}
+}
+?>
+        </tbody>
+      </table>
+
     </div>
-  </div>
-</div>
-        </div>
-      </div>
 </div>
 <!-- ./wrapper -->

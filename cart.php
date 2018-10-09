@@ -1,5 +1,64 @@
 <?php
+	error_reporting(0);
 	session_start();	
+	if(!isset($_SESSION['nome'])){
+    header('location:login.php');
+  }
+if(!empty($_POST['nome'])){
+
+		require("admin/config.php");
+
+		$sqlcli = "SELECT id, nome, senha FROM clientes WHERE nome = '".$_POST['nome']. "' AND senha ='".$_POST['senha']."'";
+
+		$query = mysqli_query($conexao, $sqlcli);
+
+		if(mysqli_num_rows($query) > 0){
+			$_SESSION['nome'] = $_POST['nome'];
+			header('location:index.php');
+
+		}else{
+			$_SESSION['msg'] = "<div id='alert' class='alert alert-danger'>Usuário e/ou Senha incorretos!</div>";
+		}
+	}
+if (!isset($_SESSION['carrinho'])) {
+	$_SESSION['carrinho'] = array();
+}
+
+if (isset($_GET['acao'])) {
+	$id = $_GET['id'];
+	if ($_GET['acao'] == 'add') {
+		if (!isset($_SESSION['carrinho'][$id])) {
+			$_SESSION['carrinho'][$id] = 1;
+		}else{
+			$_SESSION['carrinho'][$id] += 1;
+		}
+	}
+}
+if(isset($_GET['acao'])){
+		$id = $_GET['id'];
+		if($_GET['acao'] == "del"){
+			unset($_SESSION['carrinho'][$id]);
+		}
+		}
+					include "admin/config.php";
+  $sqlclie = "SELECT * FROM clientes WHERE nome = '".$_SESSION['nome']."'";
+  $queryclie = mysqli_query($conexao, $sqlclie);
+
+  while ($dadosUser = mysqli_fetch_assoc($queryclie)) {
+    $nomecli = $dadosUser['nome'];
+    $email = $dadosUser['email'];
+    $imgUser = $dadosUser['arquivo'];
+  }
+	if(isset($_GET['acao'])){
+		$id = $_GET['id'];
+		if($_GET['acao'] == "del"){
+			unset($_SESSION['carrinho'][$id]);
+		} elseif ($_GET['acao'] == 'up') {
+			$_SESSION['carrinho'][$_GET['id']] = $_GET['fun'];
+			
+		}
+	}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,19 +154,11 @@
 							</li>
 
 							<li>
-								<a href="cart.html">Features</a>
+								<a href="cart.php">Features</a>
 							</li>
 
 							<li>
-								<a href="blog.html">Blog</a>
-							</li>
-
-							<li>
-								<a href="about.html">About</a>
-							</li>
-
-							<li>
-								<a href="contact.html">Contact</a>
+								<a href="contact.php">Contact</a>
 							</li>
 						</ul>
 					</nav>
@@ -115,9 +166,16 @@
 
 				<!-- Header Icon -->
 				<div class="header-icons">
-					<a href="#" class="header-wrapicon1 dis-block">
-						<img src="images/icons/icon-header-01.png" class="header-icon1" alt="ICON">
-					</a>
+					<?php 
+				 $sqlclientes = "SELECT * FROM clientes";
+      			$buscas = mysqli_query($conexao, $sqlclientes);
+	
+				echo '<a href="perfil.php">'.$nomecli.'</a>
+                <img style="width: 27px;height: 27px;" src="images/cli/'.$imgUser.'" class="header-icon1" alt="ICON">
+                <a href="?sair" class="btn btn-default btn-flat">Sair</a>
+                ';
+				?>	
+
 
 					<span class="linedivide1"></span>
 
@@ -156,7 +214,6 @@
                                         ';
                                         $totalC += $qnt * $prods['preco'];
                                     }
-                                    $totalPro += $qnt * $prods['preco'];
                                     
                                         ?>
 							</ul>
@@ -383,7 +440,15 @@
 							<th class="column-3">Price</th>
 							<th class="column-4 p-l-70">Quantity</th>
 							<th class="column-5">Total</th>
+							<th class="column-6">Remover</th>
 						</tr>
+						<script>
+							function func(id){
+								var Funcao  = document.getElementById('x'+id).value;
+								Fun = parseInt(Funcao);
+								location.href = '?acao=up&fun='+Fun+'&id='+id;
+							}
+						</script>
 						
 						<?php
  							foreach ($_SESSION['carrinho'] as $id => $qnt) {
@@ -392,33 +457,39 @@
                                 $query_car = mysqli_query($conexao, $sql_car);
                                 $produts = mysqli_fetch_assoc($query_car);
 
+
+
                                 echo '
-                                <form method="GET">
 						<tr class="table-row">
 							<td class="column-1">
 								<div class="cart-img-product b-rad-4 o-f-hidden">
 									<img src="images/img/'.$produts['arquivo'].'" alt="IMG-PRODUCT">
+									
 								</div>
 							</td>
 							<td class="column-2">'.$produts['produto'].'</td>
 							<td class="column-3">R$'.$produts['preco'].'</td>
 							<td class="column-4">
-								<div class="flex-w bo5 of-hidden w-size17">
-
-									<input class="size8 m-text18 t-center num-product" type="number" name="quant" value="">
-
-								</div>
+								 <select class="form-control" onchange="func('.$produts['id'].')" id="x'.$produts['id'].'">';
+											
+											for ($i=1; $i <= 50 ; $i++) { 
+												if ($i == $qnt) {
+													echo '<option value="'.$i.'" selected>'.$i.'</option>';
+												} else {
+													echo '<option value="'.$i.'">'.$i.'</option>';
+												}
+											}
+											echo '
+											</select>
 							</td>
-							<td class="column-5">R$'.$totalC.'</td>
+							<td class="column-5">R$'.$qnt * $produts['preco'].'</td>
+							<td class="column-6"><a href="?acao=del&id='.$id.'"><i class="fa fa-trash"></i></a></td>
 						</tr>
 
 						';
-						$qnt = $_GET['quant'];
-						$totalC += $qnt * $prods['preco'];
 					}
 
 						?>
-
 					</table>
 				</div>
 			</div>
@@ -444,7 +515,6 @@
 					</button>
 				</div>
 			</div>
-</form>
 			<!-- Total -->
 			<div class="bo9 w-size18 p-l-40 p-r-40 p-t-30 p-b-38 m-t-30 m-r-0 m-l-auto p-lr-15-sm">
 				<h5 class="m-text20 p-b-24">
@@ -458,7 +528,9 @@
 					</span>
 
 					<span class="m-text21 w-size20 w-full-sm">
-						<?php echo number_format($totalC,2,",",".")?>
+						<?php
+						 echo "R$".number_format($totalC, 2, ',', '.'); 
+						?>
 					</span>
 				</div>
 
@@ -524,7 +596,10 @@ Error_reporting(0);
 
 				<div class="flex-w flex-sb-m p-t-26 p-b-30">
 					<span class="m-text22 w-size19 w-full-sm">
-					Total:
+					Total Com Frete: <?php
+					$frete = $valor + $totalC;
+					 echo "R$".number_format($frete, 2, ',', '.'); 
+					 ?>
 					
 					</span>
 
@@ -532,9 +607,9 @@ Error_reporting(0);
 
 				<div class="size15 trans-0-4">
 					<!-- Button -->
-					<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+					<a href="pedi.php" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
 						Proceed to Checkout
-					</button>
+					</a>
 				</div>
 			</div>
 		</div>

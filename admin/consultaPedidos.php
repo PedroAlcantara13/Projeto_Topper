@@ -7,34 +7,46 @@
     </section>
 
     <!-- Main content -->
-    <div class="content">
+<div class="content">
       <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th>#</th>
             <th>Código do Pedido</th>
             <th>Cliente</th>
-            <th>Valor</th>
-            <th>Ações</th>
+            <th>Valor Un.</th>
+            <th>Quantidade</th>
+            <th>Valor Fin.</th>
+            <th>Informações</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>02-25253</td>
-            <td>Manoel Carvalho</td>
-            <td>159,009</td>
-            <td><i class="fa fa-eye"></i></i></td>
+            <?php
+      include "config.php";
 
-          </tr>
-           <tr>
-            <td>2</td>
-            <td>02-27753</td>
-            <td>Luis David</td>
-            <td>1.549,00</td>
-            <td><i class="fa fa-eye"></i></i></td>
+      $sqll = "SELECT * FROM pedidos";
+      $busca = mysqli_query($conexao, $sqll);
+   if (mysqli_num_rows($busca)<0) {      
+      echo "Nenhum registro encontrado.";
+   }else{
 
-          </tr>
+
+      while ($dados = mysqli_fetch_array($busca)) {     
+      $total = $dados['quanti'] * $dados['valor'];           
+      echo "
+                <tr>
+            <td>#</td>
+            <td>".$dados['id']."</td>
+            <td>".$dados['nome']."</td>
+            <td>R$".$dados['valor']."</td>
+            <td>".$dados['quanti']."</td>
+            <td>".$total."</td>
+            <td>".$dados['info']."</td>
+            </tr>
+";
+}
+}
+?>
         </tbody>
       </table>
 
